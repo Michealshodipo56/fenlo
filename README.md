@@ -67,3 +67,5 @@ Or use the Blueprint: point Render at `backend/render.yaml`.
 - **Database:** Neon Postgres
 - **Auth:** Neon Auth
 - **AI:** Groq (free) or Gemini (free)
+
+created by **Micheal Shodipo**
