@@ -7,7 +7,13 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const publicDir = join(__dirname, '..', 'public');
 const coreDir = join(publicDir, 'assets', 'js', 'core');
 
-const siteUrl = (process.env.SITE_URL || 'https://fenlo.vercel.app').replace(/\/$/, '');
+function normalizeSiteUrl(url) {
+  let u = (url || 'https://fenlo.vercel.app').trim().replace(/\/$/, '');
+  if (!/^https?:\/\//i.test(u)) u = `https://${u}`;
+  return u;
+}
+
+const siteUrl = normalizeSiteUrl(process.env.SITE_URL);
 const apiUrl = (process.env.API_URL || '').replace(/\/$/, '');
 const neonAuthUrl = process.env.NEON_AUTH_URL || '';
 const googleVerification = process.env.GOOGLE_SITE_VERIFICATION || 'GWlm1cpN7bEXema60NG3J64EbbJ5VbOZnon6exzgZ1s';

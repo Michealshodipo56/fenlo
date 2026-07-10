@@ -6,7 +6,13 @@ import { fileURLToPath } from 'node:url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const publicDir = join(__dirname, '..', 'public');
 
-const BASE = (process.env.SITE_URL || 'https://fenlo.vercel.app').replace(/\/$/, '');
+function normalizeSiteUrl(url) {
+  let u = (url || 'https://fenlo.vercel.app').trim().replace(/\/$/, '');
+  if (!/^https?:\/\//i.test(u)) u = `https://${u}`;
+  return u;
+}
+
+const BASE = normalizeSiteUrl(process.env.SITE_URL);
 const today = new Date().toISOString().slice(0, 10);
 
 const ROUTES = [
@@ -18,8 +24,9 @@ const ROUTES = [
 ];
 
 function urlNode({ path, priority, changefreq }) {
+  const loc = path === '/' ? `${BASE}/` : `${BASE}${path}`;
   return `  <url>
-    <loc>${BASE}${path}</loc>
+    <loc>${loc}</loc>
     <lastmod>${today}</lastmod>
     <changefreq>${changefreq}</changefreq>
     <priority>${priority}</priority>
