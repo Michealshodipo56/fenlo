@@ -1,0 +1,10 @@
+{
+  "name": "Fenlo",
+  "short_name": "Fenlo",
+  "description": "AI assignment completion platform for students",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#faf8f1",
+  "theme_color": "#faf8f1",
+  "icons": [{ "src": "/assets/img/fenlo-logo.svg", "sizes": "any", "type": "image/svg+xml" }]
+}
