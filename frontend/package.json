@@ -6,7 +6,8 @@
   "scripts": {
     "build:css": "node scripts/build-css.mjs",
     "build:config": "node scripts/inject-config.mjs",
-    "build": "npm run build:css && npm run build:config",
+    "build:sitemap": "node scripts/gen-sitemap.mjs",
+    "build": "npm run build:css && npm run build:config && npm run build:sitemap",
     "dev": "npm run build && npx serve public -l 3000"
   },
   "devDependencies": {

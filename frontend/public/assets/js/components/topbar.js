@@ -2,7 +2,7 @@ import { state } from '../core/state.js';
 import { esc } from '../core/helpers.js';
 
 export function fenloLockup() {
-  return `<img class="mark" src="/assets/img/fenlo-logo.svg" alt="" decoding="async"><span class="word">enlo</span><em>/assignments</em>`;
+  return `<img class="mark" src="/assets/img/fenlo-logo.svg" alt="" decoding="async"><span class="word">enlo</span><em class="nb-logo-tag">/assignments</em>`;
 }
 
 export function hrefFor(nav) {

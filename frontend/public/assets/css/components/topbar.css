@@ -11,9 +11,13 @@
   /* The SVG carries its own colours and yellow accent — no border / no bg here. */
 }
 .nb-logo .word{margin-left:-2px;color:var(--ink)}
-.nb-logo em{
+.nb-logo em,
+.nb-logo .nb-logo-tag{
   font-family:var(--serif);font-style:italic;font-weight:500;
   color:var(--ink-3);font-size:14px;margin-left:8px;letter-spacing:0;
+}
+@media(max-width:1039px){
+  .nb-logo .nb-logo-tag{display:none}
 }
 .nb-logo:hover .mark{transform:rotate(-3deg);transition:transform .18s ease}
 

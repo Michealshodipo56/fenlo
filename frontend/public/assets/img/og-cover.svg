@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-labelledby="og-title">
+  <title id="og-title">Fenlo  Upload your assignment, get a polished answer back</title>
+  <rect width="1200" height="630" fill="#faf8f1"/>
+  <g stroke="#e6e0cd" stroke-width="1" opacity="0.8">
+    <line x1="0" y1="120" x2="1200" y2="120"/>
+    <line x1="0" y1="160" x2="1200" y2="160"/>
+    <line x1="0" y1="200" x2="1200" y2="200"/>
+    <line x1="0" y1="240" x2="1200" y2="240"/>
+    <line x1="0" y1="280" x2="1200" y2="280"/>
+    <line x1="0" y1="320" x2="1200" y2="320"/>
+    <line x1="0" y1="360" x2="1200" y2="360"/>
+    <line x1="0" y1="400" x2="1200" y2="400"/>
+    <line x1="0" y1="440" x2="1200" y2="440"/>
+    <line x1="0" y1="480" x2="1200" y2="480"/>
+    <line x1="0" y1="520" x2="1200" y2="520"/>
+  </g>
+  <line x1="100" y1="0" x2="100" y2="630" stroke="#d97b6c" stroke-width="1.5" opacity="0.5"/>
+  <g transform="translate(140,88)">
+    <rect width="148" height="34" rx="6" fill="#17181c"/>
+    <text x="14" y="23" font-family="ui-monospace, monospace" font-size="13" font-weight="600" fill="#ffe680">FENLO</text>
+    <text x="78" y="23" font-family="ui-monospace, monospace" font-size="12" fill="#faf8f1" opacity="0.65">/ assignments</text>
+  </g>
+  <text x="140" y="210" font-family="Georgia, serif" font-size="58" font-weight="700" fill="#17181c">Upload your assignment </text>
+  <text x="140" y="280" font-family="Georgia, serif" font-size="58" font-weight="700" fill="#17181c">get a <tspan fill="#1e528f" font-style="italic">polished</tspan> answer back.</text>
+  <rect x="140" y="330" width="220" height="8" rx="2" fill="#ffe680"/>
+  <rect x="380" y="330" width="180" height="8" rx="2" fill="#c9ecd0"/>
+  <g transform="translate(140,380)" font-family="ui-monospace, monospace" font-size="15" fill="#646570">
+    <text y="0">full assignment · direct answer · PDF · DOCX · TXT</text>
+    <text y="36">built like a notebook, fast like an app</text>
+  </g>
+  <rect x="140" y="500" width="920" height="1.5" fill="#17181c" opacity="0.15"/>
+  <text x="140" y="545" font-family="ui-monospace, monospace" font-size="14" fill="#646570">fenlo.app · for learning purposes</text>
+</svg>
