@@ -1,7 +1,8 @@
-import { hydrateFromStorage, setUser, setUsage, setSubmissions } from './core/state.js';
+import { setUser, setUsage, setSubmissions } from './core/state.js';
 import { register, bootFromPath } from './core/router.js';
-import { onAuthChange, currentUser, signOut, signInWithGoogle } from './core/auth.js';
+import { onAuthChange, currentUser, signOut } from './core/auth.js';
 import { topbar, rerenderTopbar } from './components/topbar.js';
+import { openLoginModal } from './components/login-modal.js';
 import { toast } from './core/toast.js';
 import { API } from './core/api.js';
 
@@ -29,12 +30,18 @@ document.addEventListener('click', async (e) => {
   const action = target.dataset.action;
 
   if (action === 'signin') {
-    try { await signInWithGoogle(); }
-    catch (err) { toast(err.message || 'Sign-in failed', 'err'); }
+    openLoginModal();
   }
   if (action === 'signout') {
-    try { await signOut(); toast('Signed out.', 'ok'); }
-    catch { toast('Sign-out failed.', 'err'); }
+    try {
+      await signOut();
+      setUser(null);
+      await syncFromServer();
+      toast('Signed out.', 'ok');
+      rerenderTopbar();
+    } catch (err) {
+      toast(err.message || 'Sign-out failed', 'err');
+    }
   }
 });
 
@@ -66,10 +73,18 @@ async function init() {
   onAuthChange(async (user) => {
     setUser(user);
     await syncFromServer();
+    rerenderTopbar();
     if (firstAuth) { firstAuth = false; return; }
     bootFromPath('home');
   });
 }
+
+document.addEventListener('fenlo:auth-changed', async () => {
+  const user = await currentUser();
+  setUser(user);
+  await syncFromServer();
+  rerenderTopbar();
+});
 
 document.addEventListener('fenlo:usage', (e) => setUsage(e.detail));
 document.addEventListener('fenlo:state-changed', rerenderTopbar);

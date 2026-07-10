@@ -32,6 +32,7 @@ const ORDER = [
   'components/search.css',
   'components/tabs.css',
   'components/login-wall.css',
+  'components/login-modal.css',
   'components/download-modal.css',
   'components/toast.css',
   'components/footer.css',

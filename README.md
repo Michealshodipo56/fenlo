@@ -45,8 +45,17 @@ Health check: `GET /health` → `{ ok: true, db: { connected: true } }`
 
 ```
 API_URL=https://your-api.onrender.com
-NEON_AUTH_URL=https://ep-xxx.neonauth.../auth
+NEON_AUTH_URL=https://ep-xxx.neonauth.us-east-1.aws.neon.tech/neondb/auth
 ```
+
+Get `NEON_AUTH_URL` from **Neon Console → Auth → Configuration → Auth Base URL**.
+
+### Neon Auth setup (required for sign-in)
+
+1. Neon Console → **Auth** → enable Google (and/or email)
+2. **Trusted domains** — add your Vercel URL (e.g. `fenlo.vercel.app`)
+3. Copy **Auth Base URL** → set as `NEON_AUTH_URL` on Vercel
+4. Redeploy frontend
 
 ## 4. After deploy
 
