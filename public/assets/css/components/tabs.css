@@ -1,0 +1,17 @@
+.nb-tabs{display:flex;gap:0;border:1.5px solid var(--ink);overflow-x:auto;scrollbar-width:none;margin:18px 0;background:var(--paper)}
+.nb-tabs::-webkit-scrollbar{display:none}
+.nb-tabs button{padding:10px 18px;border-right:1px solid var(--rule-ink);font-family:var(--mono);font-size:12px;font-weight:600;white-space:nowrap;color:var(--ink-2);transition:.18s;background:var(--paper);cursor:pointer;border-top:0;border-bottom:0;border-left:0}
+.nb-tabs button:last-child{border-right:0}
+.nb-tabs button:hover{background:var(--paper-2)}
+.nb-tabs button.active{background:var(--ink);color:var(--paper)}
+.nb-tabs button .n{color:var(--ink-3);margin-left:6px;font-size:11px}
+.nb-tabs button.active .n{color:#9a9aa0}
+
+.nb-faq{margin:40px 0}
+.nb-faq h2{font-size:26px;font-weight:800;letter-spacing:-.025em;margin:0 0 16px;padding-bottom:10px;border-bottom:1.5px solid var(--ink)}
+.nb-faq details{border-bottom:1px dashed var(--rule-ink);padding:16px 0}
+.nb-faq summary{font-weight:700;font-size:16px;cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.nb-faq summary::-webkit-details-marker{display:none}
+.nb-faq summary::after{content:"＋";font-family:var(--mono);font-size:18px;color:var(--ink-3);transition:transform .2s, color .2s}
+.nb-faq details[open] summary::after{transform:rotate(45deg);color:var(--red)}
+.nb-faq details > p{margin:10px 0 0;font-family:var(--serif);font-size:16px;font-style:italic;color:var(--ink-2);line-height:1.5}
