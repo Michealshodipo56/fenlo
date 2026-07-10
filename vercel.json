@@ -1,0 +1,33 @@
+{
+  "version": 2,
+  "functions": {
+    "api/generate.js": { "maxDuration": 60 },
+    "api/parse.js": { "maxDuration": 30 },
+    "api/export.js": { "maxDuration": 30 }
+  },
+  "rewrites": [
+    { "source": "/submit", "destination": "/" },
+    { "source": "/history", "destination": "/" },
+    { "source": "/pricing", "destination": "/" },
+    { "source": "/about", "destination": "/" },
+    { "source": "/result/:id", "destination": "/" }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
+      ]
+    },
+    {
+      "source": "/assets/fonts/(.*)",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
+    },
+    {
+      "source": "/assets/(css|js)/(.*)",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=0, s-maxage=86400, stale-while-revalidate=86400" }]
+    }
+  ]
+}
