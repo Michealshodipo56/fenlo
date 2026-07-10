@@ -10,8 +10,8 @@ const coreDir = join(publicDir, 'assets', 'js', 'core');
 const siteUrl = (process.env.SITE_URL || 'https://fenlo.vercel.app').replace(/\/$/, '');
 const apiUrl = (process.env.API_URL || '').replace(/\/$/, '');
 const neonAuthUrl = process.env.NEON_AUTH_URL || '';
-const googleVerification = process.env.GOOGLE_SITE_VERIFICATION || '';
-const ogImage = process.env.OG_IMAGE_URL || '/assets/img/og-cover.svg';
+const googleVerification = process.env.GOOGLE_SITE_VERIFICATION || 'GWlm1cpN7bEXema60NG3J64EbbJ5VbOZnon6exzgZ1s';
+const ogImage = process.env.OG_IMAGE_URL || '/assets/img/og-cover.png';
 
 const ogImagePath = ogImage.startsWith('http')
   ? ogImage
@@ -47,6 +47,7 @@ const seoBlock = `<!-- fenlo-seo -->
 <meta property="og:description" content="Upload your assignment — get a polished answer back. Full assignment or direct solution. Export to PDF, Word, TXT, or Markdown.">
 <meta property="og:url" content="${siteUrl}/">
 <meta property="og:image" content="${ogImagePath}">
+<meta property="og:image:type" content="${ogImagePath.endsWith('.png') ? 'image/png' : ogImagePath.endsWith('.svg') ? 'image/svg+xml' : 'image/jpeg'}">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Fenlo — Upload your assignment, get a polished answer back">
