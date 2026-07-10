@@ -1,0 +1,116 @@
+/* Hero search bar */
+.nb-search{
+  display:flex;gap:0;max-width:680px;border:1.5px solid var(--ink);
+  background:var(--paper);border-radius:8px;position:relative;
+  /* No overflow:hidden — the .nb-sdrop child positions absolutely beneath. */
+}
+.nb-search.nb-search-wide{max-width:none;width:100%}
+.nb-search::before{
+  content:"";position:absolute;left:14px;top:50%;transform:translateY(-50%);
+  width:18px;height:18px;flex-shrink:0;pointer-events:none;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237b7c84' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'><circle cx='11' cy='11' r='7'/><path d='M20 20l-4-4'/></svg>");
+  background-repeat:no-repeat;background-size:contain;
+}
+.nb-search input{
+  flex:1;border:0;outline:0;background:transparent;font:inherit;
+  font-size:15px;padding:14px 18px 14px 42px;
+  font-family:var(--mono);color:var(--ink);border-radius:6px 0 0 6px;
+}
+.nb-search input::placeholder{color:var(--ink-3)}
+.nb-search button{
+  background:var(--ink);color:var(--paper);padding:0 22px;
+  font-family:var(--mono);font-weight:600;font-size:13px;flex-shrink:0;
+  border:0;cursor:pointer;letter-spacing:.04em;border-radius:0 6px 6px 0;
+}
+.nb-search button:hover{background:#000}
+
+/* ─── Results panel ─────────────────────────────────────────────────────── */
+.nb-sdrop{
+  position:absolute;top:calc(100% + 8px);left:0;right:0;
+  background:var(--paper);border:1.5px solid var(--ink);
+  z-index:60;max-height:520px;overflow-y:auto;
+  border-radius:10px;box-shadow:3px 3px 0 var(--ink);
+  padding:10px;animation:nbRise .22s ease-out;
+}
+.nb-sdrop::-webkit-scrollbar{width:8px}
+.nb-sdrop::-webkit-scrollbar-thumb{background:var(--rule-ink);border-radius:4px}
+
+/* group of results — feels like a notebook section */
+.nb-sgrp{margin:0;padding:6px 0 8px}
+.nb-sgrp + .nb-sgrp{margin-top:6px;border-top:1px dashed var(--rule-ink);padding-top:10px}
+.nb-sgrp-h{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:4px 10px 8px;font-family:var(--mono);font-size:10.5px;font-weight:700;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);
+}
+.nb-sgrp-h .n{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:2px 8px;border-radius:999px;background:var(--paper-2);
+  color:var(--ink-2);font-weight:700;letter-spacing:.04em;
+  text-transform:none;font-size:10.5px;
+}
+
+/* row — paper card with hover lift */
+.nb-srow{
+  display:grid;grid-template-columns:34px 1fr auto;gap:12px;align-items:center;
+  padding:10px 12px;margin:3px 0;border-radius:8px;
+  text-decoration:none;color:var(--ink);cursor:pointer;
+  border:1.5px solid transparent;background:transparent;
+  transition:background .12s, border-color .12s, transform .12s, box-shadow .12s;
+}
+.nb-srow:hover, .nb-srow:focus-visible{
+  background:var(--paper);border-color:var(--ink);
+  transform:translate(-1px,-1px);box-shadow:2px 2px 0 var(--ink);
+  outline:none;
+}
+.nb-srow .ico{
+  width:34px;height:34px;display:grid;place-items:center;
+  border:1.5px solid var(--ink);border-radius:7px;background:var(--paper-2);
+  color:var(--ink-2);flex-shrink:0;
+}
+.nb-srow .ico svg{width:18px;height:18px}
+.nb-srow .ico img{width:24px;height:24px;object-fit:contain;display:block}
+
+/* kind-specific icon backgrounds — subtle colour cue */
+.nb-srow[data-kind="subject"]  .ico{background:var(--mint)}
+.nb-srow[data-kind="exam"]     .ico{background:var(--sky)}
+.nb-srow[data-kind="bookmark"] .ico{background:var(--yellow)}
+.nb-srow[data-kind="mcq"]      .ico{background:var(--paper-2)}
+
+.nb-srow .t{
+  font-family:var(--sans);font-size:14px;font-weight:600;color:var(--ink);
+  line-height:1.4;overflow:hidden;display:-webkit-box;
+  -webkit-line-clamp:2;-webkit-box-orient:vertical;
+}
+.nb-srow .t em{
+  font-family:var(--serif);font-style:italic;font-weight:500;
+  color:var(--ink-3);font-size:12.5px;margin-left:6px;
+}
+.nb-srow .t mark.hl{
+  background:var(--yellow-2);padding:0 .15em;border-radius:3px;
+  font-weight:700;color:var(--ink);
+}
+.nb-srow:hover .t mark.hl{background:var(--yellow)}
+
+.nb-srow .m{
+  font-family:var(--mono);font-size:10.5px;color:var(--ink-3);
+  letter-spacing:.04em;flex-shrink:0;
+  padding:3px 8px;border-radius:999px;border:1px solid var(--rule-ink);
+  background:var(--paper);white-space:nowrap;
+}
+.nb-srow[data-kind="bookmark"] .m{background:var(--yellow);color:var(--ink);border-color:var(--ink)}
+
+.nb-srow-empty{
+  padding:18px 14px;font-family:var(--serif);font-style:italic;
+  font-size:14px;color:var(--ink-3);text-align:center;
+}
+
+/* Mobile — drop the right-side chip, keep icon + text */
+@media(max-width:560px){
+  .nb-search input{font-size:14px;padding-left:38px}
+  .nb-search button{padding:0 14px}
+  .nb-srow{grid-template-columns:30px 1fr;gap:10px;padding:8px 10px}
+  .nb-srow .ico{width:30px;height:30px}
+  .nb-srow .ico svg{width:16px;height:16px}
+  .nb-srow .m{display:none}
+}
