@@ -1,0 +1,110 @@
+.nb-wall{
+  position:fixed;inset:0;display:grid;place-items:center;
+  z-index:100;animation:nbFade .3s;padding:20px;
+  background:rgba(22,22,26,.42);
+  backdrop-filter:blur(10px) saturate(140%);
+  -webkit-backdrop-filter:blur(10px) saturate(140%);
+}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  .nb-wall{background:rgba(22,22,26,.6)}
+}
+.nb-wall-card{background:var(--paper);border:2px solid var(--ink);padding:36px 32px;max-width:440px;width:100%;text-align:center;animation:nbRise .4s;position:relative;border-radius:6px}
+.nb-wall-card::before{content:"";position:absolute;inset:-8px -8px auto auto;width:60px;height:60px;background:var(--yellow);border:1.5px solid var(--ink);transform:rotate(8deg);z-index:-1;border-radius:6px}
+.nb-wall-card h3{margin:0 0 10px;font-size:26px;font-weight:800;letter-spacing:-.02em}
+.nb-wall-card h3 em{font-family:var(--serif);font-style:italic;font-weight:500}
+.nb-wall-card p{margin:0 0 24px;color:var(--ink-2);font-family:var(--serif);font-style:italic;font-size:16px;line-height:1.5}
+.nb-wall-card .si{display:grid;gap:8px}
+.nb-wall-card .si button{padding:12px;border:1.5px solid var(--ink);font-family:var(--mono);font-weight:600;font-size:13px;display:flex;justify-content:center;gap:10px;align-items:center;background:var(--paper);transition:transform .12s,box-shadow .12s;cursor:pointer;border-radius:6px}
+.nb-wall-card .si button:hover{transform:translate(-1px,-1px);box-shadow:var(--shadow-pop)}
+.nb-wall-card .si button:disabled{opacity:.6;cursor:wait}
+.nb-wall-card .si .p{background:var(--ink);color:var(--paper)}
+.nb-wall-card .fi{margin-top:18px;font-family:var(--mono);font-size:11px;color:var(--ink-3);letter-spacing:.05em}
+
+/* Hard variant — replaces the entire #app. No dismiss, no escape.
+   Same visual language as the download modal: paper card, ink border,
+   yellow corner sticker, structured sections. */
+.nb-wall.is-hard{
+  position:fixed;inset:0;width:100vw;height:100vh;
+  display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;
+  background:linear-gradient(135deg,var(--paper) 0%,var(--paper-2) 100%);
+  backdrop-filter:none;-webkit-backdrop-filter:none;
+  padding:0;overflow-y:auto;
+}
+.nb-wall.is-hard::before{
+  content:"";position:absolute;inset:0;
+  background-image:linear-gradient(transparent 31px,var(--rule) 31px,var(--rule) 32px,transparent 32px);
+  background-size:100% 32px;opacity:.5;pointer-events:none;
+}
+
+/* minimal top strip — logo only, no nav. The visitor cannot escape. */
+.nb-wall-top{
+  position:relative;z-index:2;
+  border-bottom:1.5px solid var(--ink);background:var(--paper);
+  padding:14px 24px;
+}
+
+/* centred content area */
+.nb-wall-main{
+  flex:1;display:grid;place-items:center;padding:36px 20px 48px;
+  position:relative;z-index:1;
+}
+
+/* the card itself — mirrors .nb-dl-card */
+.nb-wall.is-hard .nb-wall-card{
+  max-width:520px;width:100%;padding:36px 36px 28px;text-align:left;
+  position:relative;
+}
+@media(max-width:560px){.nb-wall.is-hard .nb-wall-card{padding:26px 22px}}
+
+.nb-wall-tag{
+  display:inline-block;padding:5px 11px;margin-bottom:14px;
+  border:1.5px solid var(--ink);border-radius:999px;background:var(--yellow);
+  font-family:var(--mono);font-size:10.5px;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--ink);
+}
+
+.nb-wall.is-hard h3{
+  font-size:28px;margin:0 0 10px;letter-spacing:-.02em;line-height:1.1;
+}
+.nb-wall.is-hard h3 em{font-family:var(--serif);font-style:italic;font-weight:500;color:var(--ink-2)}
+
+.nb-wall-sub{
+  margin:0 0 22px;color:var(--ink-2);font-family:var(--serif);
+  font-style:italic;font-size:15.5px;line-height:1.55;
+}
+
+/* perks list — checkmark + plain copy, no card chrome */
+.nb-wall-perks{
+  list-style:none;padding:14px 16px;margin:0 0 22px;
+  border:1.5px dashed var(--ink);border-radius:8px;background:var(--paper-2);
+  display:flex;flex-direction:column;gap:10px;
+}
+.nb-wall-perks li{
+  display:flex;align-items:flex-start;gap:11px;
+  font-family:var(--sans);font-size:14px;color:var(--ink-2);line-height:1.45;
+}
+.nb-wall-perks li b{color:var(--ink);font-weight:700}
+.nb-wall-perks .ck{
+  width:22px;height:22px;flex-shrink:0;display:grid;place-items:center;
+  border-radius:50%;background:var(--mint);color:var(--green);margin-top:1px;
+  border:1.5px solid var(--green);
+}
+
+/* primary CTA — full-width, ink fill, hover lift */
+.nb-wall-cta{
+  width:100%;padding:14px 18px;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  border:1.5px solid var(--ink);border-radius:8px;
+  background:var(--ink);color:var(--paper);
+  font-family:var(--mono);font-weight:600;font-size:13.5px;letter-spacing:.02em;
+  cursor:pointer;transition:transform .12s,box-shadow .12s,opacity .12s;
+}
+.nb-wall-cta:hover{transform:translate(-1px,-1px);box-shadow:2px 2px 0 var(--ink-3)}
+.nb-wall-cta:active{transform:translate(0,0);box-shadow:none}
+.nb-wall-cta:disabled{opacity:.65;cursor:wait}
+
+.nb-wall-fine{
+  margin:14px 0 0;text-align:center;
+  font-family:var(--mono);font-size:11px;color:var(--ink-3);
+  letter-spacing:.05em;font-style:normal;
+}
