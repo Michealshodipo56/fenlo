@@ -1,23 +1,33 @@
 import { esc, formatDate, modeLabel, simpleMarkdownToHtml } from '../core/helpers.js';
 import { topbar, footer } from '../components/topbar.js';
 import { wireNav, navigate } from '../core/router.js';
-import { getSubmission, persistToStorage } from '../core/state.js';
+import { getSubmission, upsertSubmission, setUsage } from '../core/state.js';
 import { openExportModal } from '../components/export-modal.js';
 import { API } from '../core/api.js';
 import { toast } from '../core/toast.js';
 
 const root = () => document.getElementById('app');
 
-export function renderResult({ id }) {
-  const sub = getSubmission(id);
+export async function renderResult({ id }) {
+  const r = root();
+  r.innerHTML = `${topbar('history')}<main class="nb-wrap"><p style="font-family:var(--mono);font-size:13px;color:var(--ink-3);padding:40px 0;text-align:center">loading result…</p></main>${footer()}`;
+  wireNav(r);
+
+  let sub = getSubmission(id);
   if (!sub) {
-    const r = root();
-    r.innerHTML = `${topbar('history')}<main class="nb-wrap"><div class="nb-empty"><h4>Submission not found</h4><p>This result may have been cleared from your browser.</p><button class="nb-btn" data-nav="submit" type="button">new assignment →</button></div></main>${footer()}`;
+    try {
+      const res = await API.getSubmission(id);
+      sub = res.submission;
+      if (sub) upsertSubmission(sub);
+    } catch { /* fall through */ }
+  }
+
+  if (!sub) {
+    r.innerHTML = `${topbar('history')}<main class="nb-wrap"><div class="nb-empty"><h4>Submission not found</h4><p>This result doesn't exist or belongs to another account.</p><button class="nb-btn" data-nav="submit" type="button">new assignment →</button></div></main>${footer()}`;
     wireNav(r);
     return;
   }
 
-  const r = root();
   r.innerHTML = `
   ${topbar('history')}
   <main class="nb-wrap nb-result">
@@ -63,9 +73,14 @@ export function renderResult({ id }) {
     btn.disabled = true;
     btn.textContent = 'regenerating…';
     try {
-      const res = await API.generate({ text: sub.input, mode: sub.mode });
-      sub.output = res.content;
-      persistToStorage();
+      const res = await API.regenerate(sub.id);
+      if (res.usage) setUsage(res.usage);
+      if (res.submission) {
+        upsertSubmission(res.submission);
+        sub = res.submission;
+      } else {
+        sub.output = res.content;
+      }
       document.getElementById('preview').innerHTML = simpleMarkdownToHtml(sub.output);
       toast('Regenerated.', 'ok');
     } catch (err) {

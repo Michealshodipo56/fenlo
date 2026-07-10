@@ -7,7 +7,7 @@ const root = () => document.getElementById('app');
 
 export function renderHome() {
   const r = root();
-  const remaining = state.plan === 'free' ? state.usageLimit - state.usageCount : '∞';
+  const remaining = state.plan === 'pro' ? '∞' : Math.max(0, state.usageLimit - state.usageCount);
 
   r.innerHTML = `
   ${topbar('home')}

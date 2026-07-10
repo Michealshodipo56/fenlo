@@ -1,8 +1,9 @@
-import { hydrateFromStorage, setUser } from './core/state.js';
+import { hydrateFromStorage, setUser, setUsage, setSubmissions } from './core/state.js';
 import { register, bootFromPath } from './core/router.js';
 import { onAuthChange, currentUser, signOut, signInWithGoogle } from './core/auth.js';
 import { topbar, rerenderTopbar } from './components/topbar.js';
 import { toast } from './core/toast.js';
+import { API } from './core/api.js';
 
 const root = document.getElementById('app');
 
@@ -37,8 +38,20 @@ document.addEventListener('click', async (e) => {
   }
 });
 
+async function syncFromServer() {
+  try {
+    const [usageRes, subsRes] = await Promise.all([
+      API.getUsage(),
+      API.getSubmissions(),
+    ]);
+    setUsage(usageRes);
+    setSubmissions(subsRes.submissions || []);
+  } catch (err) {
+    console.warn('syncFromServer:', err.message);
+  }
+}
+
 async function init() {
-  hydrateFromStorage();
   root.innerHTML = topbar('home') + '<div style="padding:60px 24px;font-family:var(--mono);font-size:13px;color:var(--ink-3);text-align:center">loading…</div>';
 
   try {
@@ -46,15 +59,19 @@ async function init() {
     setUser(user);
   } catch { /* anonymous OK */ }
 
+  await syncFromServer();
   bootFromPath('home');
 
   let firstAuth = true;
-  onAuthChange((user) => {
+  onAuthChange(async (user) => {
     setUser(user);
+    await syncFromServer();
     if (firstAuth) { firstAuth = false; return; }
     bootFromPath('home');
   });
 }
 
-init();
+document.addEventListener('fenlo:usage', (e) => setUsage(e.detail));
 document.addEventListener('fenlo:state-changed', rerenderTopbar);
+
+init();

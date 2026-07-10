@@ -1,22 +1,23 @@
 import { esc } from '../core/helpers.js';
 import { topbar, footer } from '../components/topbar.js';
 import { wireNav, navigate } from '../core/router.js';
-import { state, canSubmit, addSubmission } from '../core/state.js';
+import { state, canSubmit, upsertSubmission, setUsage } from '../core/state.js';
 import { API } from '../core/api.js';
 import { toast } from '../core/toast.js';
-import { uid } from '../core/helpers.js';
 
 const root = () => document.getElementById('app');
 let uploadedFile = null;
 let parsedFileText = '';
 
-export function renderSubmit() {
+export async function renderSubmit() {
   if (!canSubmit()) {
     renderPaywall();
     return;
   }
 
   const r = root();
+  const remaining = remainingLabel();
+
   r.innerHTML = `
   ${topbar('submit')}
   <main class="nb-wrap nb-submit">
@@ -61,9 +62,7 @@ export function renderSubmit() {
           <div class="nb-submit-actions">
             <button class="nb-btn primary" type="submit" id="submit-btn">generate →</button>
           </div>
-          <p class="muted" style="margin-top:12px;font-family:var(--mono);font-size:11px">
-            ${state.plan === 'free' ? `${state.usageLimit - state.usageCount} free submissions remaining` : 'Unlimited on your plan'}
-          </p>
+          <p class="muted" style="margin-top:12px;font-family:var(--mono);font-size:11px">${remaining}</p>
         </div>
       </aside>
     </form>
@@ -73,6 +72,12 @@ export function renderSubmit() {
   wireNav(r);
   setupUpload();
   setupForm();
+}
+
+function remainingLabel() {
+  if (state.plan === 'pro') return 'Unlimited on your plan';
+  const left = Math.max(0, state.usageLimit - state.usageCount);
+  return `${left} free submission${left === 1 ? '' : 's'} remaining this month`;
 }
 
 function setupUpload() {
@@ -118,20 +123,12 @@ function setupForm() {
     const combined = [text, parsedFileText].filter(Boolean).join('\n\n---\n\n');
     if (!combined) { toast('Please enter assignment text or upload a file', 'err'); return; }
 
-    renderProcessing();
+    renderProcessing(mode);
     try {
       const res = await API.generate({ text: combined, mode, fileText: parsedFileText, fileName: uploadedFile?.name });
-      const sub = {
-        id: uid(),
-        title: truncateTitle(combined),
-        input: combined,
-        output: res.content,
-        mode,
-        createdAt: new Date().toISOString(),
-        fileName: uploadedFile?.name || null,
-      };
-      addSubmission(sub);
-      navigate('result', { id: sub.id });
+      if (res.usage) setUsage(res.usage);
+      if (res.submission) upsertSubmission(res.submission);
+      navigate('result', { id: res.submission.id });
     } catch (err) {
       toast(err.message || 'Generation failed', 'err');
       renderSubmit();
@@ -139,12 +136,7 @@ function setupForm() {
   });
 }
 
-function truncateTitle(s) {
-  const line = s.split('\n')[0];
-  return line.length > 60 ? line.slice(0, 60) + '…' : line;
-}
-
-function renderProcessing() {
+function renderProcessing(mode) {
   const r = root();
   r.innerHTML = `
   ${topbar('submit')}
@@ -153,7 +145,7 @@ function renderProcessing() {
       <div class="nb-processing">
         <div class="spinner" aria-hidden="true"></div>
         <h3>Processing your assignment</h3>
-        <p>Parsing instructions, classifying task type, and generating your ${document.querySelector('[name="mode"]:checked')?.value === 'direct' ? 'answer' : 'assignment'}…</p>
+        <p>Parsing instructions, classifying task type, and generating your ${mode === 'direct' ? 'answer' : 'assignment'}…</p>
       </div>
     </div>
   </main>`;

@@ -1,71 +1,88 @@
 # Fenlo — monorepo
 
-AI assignment platform split into two deployable services:
+| Folder | Host | Role |
+|--------|------|------|
+| `frontend/` | **Vercel** | SPA UI |
+| `backend/` | **Render** | Express API + Neon Postgres |
 
-| Folder | Host | What it runs |
-|--------|------|--------------|
-| `frontend/` | **Vercel** | Static SPA (Studora UI) |
-| `backend/` | **Render** | Express API (AI, parse, export) |
+## 1. Neon setup
 
-## Local development
+1. Create project → enable **Auth**
+2. **SQL Editor** → run `backend/sql/schema.sql`
+3. Copy from Neon Console:
+   - `DATABASE_URL` (Connect tab)
+   - `NEON_AUTH_URL` (Auth tab) → set as `NEON_AUTH_URL` on Vercel
 
-**Terminal 1 — backend (port 4000):**
+## 2. Render (backend)
+
+| Setting | Value |
+|---------|-------|
+| Root Directory | `backend` |
+| Build | `npm install` |
+| Start | `npm start` |
+
+**Environment variables:**
+
+```
+DATABASE_URL=postgresql://...
+GROQ_API_KEY=...
+ALLOWED_ORIGINS=https://your-app.vercel.app
+FREE_TIER_LIMIT=10
+NODE_ENV=production
+```
+
+Health check: `GET /health` → `{ ok: true, db: { connected: true } }`
+
+## 3. Vercel (frontend)
+
+| Setting | Value |
+|---------|-------|
+| Root Directory | `frontend` |
+| Build | `npm run build` |
+| Output | `public` |
+
+**Environment variables:**
+
+```
+API_URL=https://your-api.onrender.com
+NEON_AUTH_URL=https://ep-xxx.neonauth.../auth
+```
+
+## 4. After deploy
+
+1. Add Vercel URL to Render `ALLOWED_ORIGINS`
+2. Add Vercel URL to Neon Auth **trusted domains**
+3. Redeploy both services
+
+## Local dev
+
 ```bash
+# Terminal 1 — backend
 cd backend
 cp .env.example .env
-# Add GROQ_API_KEY (free at console.groq.com)
-npm install
-npm run dev
-```
+# Add DATABASE_URL + GROQ_API_KEY
+npm install && npm run dev
 
-**Terminal 2 — frontend (port 3000):**
-```bash
+# Terminal 2 — frontend
 cd frontend
 cp .env.example .env
-# Set API_URL=http://localhost:4000
-npm install
 export API_URL=http://localhost:4000
-npm run build
-npm run dev
+npm install && npm run build && npm run dev
 ```
 
-Open **http://localhost:3000**
+Open http://localhost:3000
 
-## Deploy
+## API endpoints
 
-### Backend → Render
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/health` | Health + DB status |
+| GET | `/api/usage` | Usage limits (requires `X-Fenlo-User-Id`) |
+| GET | `/api/submissions` | List history |
+| GET | `/api/submissions/:id` | Get one result |
+| POST | `/api/generate` | Generate + save submission |
+| POST | `/api/submissions/:id/regenerate` | Regenerate output |
+| POST | `/api/parse` | Parse uploaded file |
+| POST | `/api/export` | Export PDF/DOCX/TXT/MD |
 
-1. New **Web Service** → connect GitHub repo
-2. **Root Directory:** `backend`
-3. **Build:** `npm install`
-4. **Start:** `npm start`
-5. **Env vars:** `GROQ_API_KEY`, `ALLOWED_ORIGINS` (your Vercel URL), `DATABASE_URL` (Neon)
-
-Or use the Blueprint: point Render at `backend/render.yaml`.
-
-### Frontend → Vercel
-
-1. New project → connect same GitHub repo
-2. **Root Directory:** `frontend`
-3. **Framework:** Other
-4. **Build Command:** `npm run build`
-5. **Output Directory:** `public`
-6. **Env vars:**
-   - `API_URL` = your Render backend URL (e.g. `https://fenlo-api.onrender.com`)
-   - `NEON_AUTH_URL` = Neon Auth URL from Neon Console
-
-### After deploy
-
-1. Set Render `ALLOWED_ORIGINS` to your Vercel URL
-2. Add Vercel URL to Neon Auth trusted domains
-3. Run `backend/sql/schema.sql` in Neon SQL Editor
-
-## Stack
-
-- **Frontend:** HTML, CSS, vanilla JS
-- **Backend:** Node.js, Express
-- **Database:** Neon Postgres
-- **Auth:** Neon Auth
-- **AI:** Groq (free) or Gemini (free)
-
-created by **Micheal Shodipo**
+Users are identified by `X-Fenlo-User-Id` header (guest ID in localStorage, or Neon Auth user ID when signed in).

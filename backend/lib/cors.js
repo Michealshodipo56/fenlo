@@ -13,6 +13,8 @@ export function corsOptions() {
       cb(new Error(`CORS blocked: ${origin}`));
     },
     credentials: true,
+    allowedHeaders: ['Content-Type', 'X-Fenlo-User-Id'],
+    methods: ['GET', 'POST', 'PATCH', 'OPTIONS'],
   };
 }
 

@@ -1,9 +1,17 @@
 import { toast } from './toast.js';
 import { API_BASE } from './config.js';
+import { getUserId } from './user.js';
 
 function apiUrl(path) {
   const base = API_BASE || window.__FENLO_API_URL__ || '';
   return `${base}${path}`;
+}
+
+function authHeaders(extra = {}) {
+  return {
+    'X-Fenlo-User-Id': getUserId(),
+    ...extra,
+  };
 }
 
 async function request(path, opts = {}) {
@@ -11,6 +19,7 @@ async function request(path, opts = {}) {
     ...opts,
     credentials: 'include',
     headers: {
+      ...authHeaders(),
       ...(opts.body instanceof FormData ? {} : { 'Content-Type': 'application/json' }),
       ...opts.headers,
     },
@@ -21,10 +30,36 @@ async function request(path, opts = {}) {
 }
 
 export const API = {
+  async getUsage() {
+    return request('/api/usage');
+  },
+
+  async getSubmissions() {
+    return request('/api/submissions');
+  },
+
+  async getSubmission(id) {
+    return request(`/api/submissions/${encodeURIComponent(id)}`);
+  },
+
   async generate({ text, mode, fileText, fileName }) {
     return request('/api/generate', {
       method: 'POST',
       body: JSON.stringify({ text, mode, fileText, fileName }),
+    });
+  },
+
+  async regenerate(id) {
+    return request(`/api/submissions/${encodeURIComponent(id)}/regenerate`, {
+      method: 'POST',
+      body: JSON.stringify({}),
+    });
+  },
+
+  async setPlan(plan) {
+    return request('/api/usage/plan', {
+      method: 'POST',
+      body: JSON.stringify({ plan }),
     });
   },
 
@@ -38,7 +73,7 @@ export const API = {
     const res = await fetch(apiUrl('/api/export'), {
       method: 'POST',
       credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
+      headers: authHeaders({ 'Content-Type': 'application/json' }),
       body: JSON.stringify({ content, title, format }),
     });
     if (!res.ok) {
@@ -57,4 +92,9 @@ export function downloadBlob(blob, filename) {
   a.click();
   URL.revokeObjectURL(url);
   toast('Download started.', 'ok');
+}
+
+export function applyUsage(usage) {
+  if (!usage) return;
+  window.dispatchEvent(new CustomEvent('fenlo:usage', { detail: usage }));
 }

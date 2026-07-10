@@ -1,12 +1,24 @@
 import { esc, formatDate, modeLabel } from '../core/helpers.js';
 import { topbar, footer } from '../components/topbar.js';
 import { wireNav, navigate } from '../core/router.js';
-import { state } from '../core/state.js';
+import { state, setSubmissions } from '../core/state.js';
+import { API } from '../core/api.js';
+import { toast } from '../core/toast.js';
 
 const root = () => document.getElementById('app');
 
-export function renderHistory() {
+export async function renderHistory() {
   const r = root();
+  r.innerHTML = `${topbar('history')}<main class="nb-wrap nb-history"><p style="font-family:var(--mono);font-size:13px;color:var(--ink-3);padding:40px 0;text-align:center">loading history…</p></main>${footer()}`;
+  wireNav(r);
+
+  try {
+    const res = await API.getSubmissions();
+    setSubmissions(res.submissions || []);
+  } catch (err) {
+    toast(err.message || 'Failed to load history', 'err');
+  }
+
   const subs = state.submissions;
 
   r.innerHTML = `

@@ -1,6 +1,7 @@
 import { topbar, footer } from '../components/topbar.js';
 import { wireNav } from '../core/router.js';
-import { state, persistToStorage } from '../core/state.js';
+import { state, setUsage } from '../core/state.js';
+import { API } from '../core/api.js';
 import { toast } from '../core/toast.js';
 
 const root = () => document.getElementById('app');
@@ -19,10 +20,10 @@ export function renderPricing() {
         <h3>Free</h3>
         <div class="price">₦0 <span>/ month</span></div>
         <ul>
-          <li>5 submissions per month</li>
+          <li>10 submissions per month</li>
           <li>Text & file upload</li>
           <li>PDF & DOCX export</li>
-          <li>Local history</li>
+          <li>Cloud history</li>
         </ul>
         <button class="nb-btn" data-plan="free" type="button" ${state.plan === 'free' ? 'disabled' : ''}>${state.plan === 'free' ? 'current plan' : 'downgrade'}</button>
       </div>
@@ -30,7 +31,7 @@ export function renderPricing() {
       <div class="nb-plan featured">
         <span class="tag">popular</span>
         <h3>Student</h3>
-        <div class="price">₦2,500 <span>/ month</span></div>
+        <div class="price">$1 <span>/ month</span></div>
         <ul>
           <li>50 submissions per month</li>
           <li>Priority processing</li>
@@ -43,7 +44,7 @@ export function renderPricing() {
 
       <div class="nb-plan">
         <h3>Pro</h3>
-        <div class="price">₦5,000 <span>/ month</span></div>
+        <div class="price">$5 <span>/ month</span></div>
         <ul>
           <li>Unlimited submissions</li>
           <li>Fastest processing</li>
@@ -59,7 +60,7 @@ export function renderPricing() {
       <div class="ic">i</div>
       <div>
         <h5>Payment coming soon</h5>
-        <p>Stripe / Paystack integration is on the roadmap. For now, clicking upgrade activates a <strong>demo plan</strong> so you can test the full experience.</p>
+        <p>Paystack integration is on the roadmap. For now, plan changes are saved to your account for testing.</p>
       </div>
     </div>
   </main>
@@ -68,15 +69,16 @@ export function renderPricing() {
   wireNav(r);
 
   r.querySelectorAll('[data-plan]').forEach((btn) => {
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', async () => {
       const plan = btn.dataset.plan;
-      state.plan = plan;
-      if (plan === 'free') state.usageLimit = 5;
-      else if (plan === 'student') state.usageLimit = 50;
-      else state.usageLimit = 9999;
-      persistToStorage();
-      toast(`Switched to ${plan} plan (demo).`, 'ok');
-      renderPricing();
+      try {
+        const usage = await API.setPlan(plan);
+        setUsage(usage);
+        toast(`Switched to ${plan} plan.`, 'ok');
+        renderPricing();
+      } catch (err) {
+        toast(err.message || 'Failed to update plan', 'err');
+      }
     });
   });
 }

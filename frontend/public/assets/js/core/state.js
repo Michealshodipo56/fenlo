@@ -2,9 +2,9 @@ export const state = {
   user: null,
   submissions: [],
   usageCount: 0,
-  usageLimit: 5,
+  usageLimit: 10,
   plan: 'free',
-  currentSubmission: null,
+  usageLoaded: false,
 };
 
 export function setUser(user) {
@@ -12,43 +12,35 @@ export function setUser(user) {
   window.dispatchEvent(new CustomEvent('fenlo:state-changed'));
 }
 
-export function hydrateFromStorage() {
-  try {
-    const raw = localStorage.getItem('fenlo.state');
-    if (!raw) return;
-    const data = JSON.parse(raw);
-    if (Array.isArray(data.submissions)) state.submissions = data.submissions;
-    if (typeof data.usageCount === 'number') state.usageCount = data.usageCount;
-    if (typeof data.usageLimit === 'number') state.usageLimit = data.usageLimit;
-    if (data.plan) state.plan = data.plan;
-  } catch { /* ignore */ }
+export function setUsage({ count, limit, plan, remaining }) {
+  state.usageCount = count ?? 0;
+  state.usageLimit = limit ?? 10;
+  state.plan = plan ?? 'free';
+  state.usageLoaded = true;
+  window.dispatchEvent(new CustomEvent('fenlo:state-changed'));
 }
 
-export function persistToStorage() {
-  localStorage.setItem('fenlo.state', JSON.stringify({
-    submissions: state.submissions,
-    usageCount: state.usageCount,
-    usageLimit: state.usageLimit,
-    plan: state.plan,
-  }));
-}
-
-export function addSubmission(sub) {
-  state.submissions.unshift(sub);
-  state.usageCount += 1;
-  persistToStorage();
+export function setSubmissions(list) {
+  state.submissions = Array.isArray(list) ? list : [];
 }
 
 export function getSubmission(id) {
   return state.submissions.find((s) => s.id === id) || null;
 }
 
+export function upsertSubmission(sub) {
+  const idx = state.submissions.findIndex((s) => s.id === sub.id);
+  if (idx >= 0) state.submissions[idx] = sub;
+  else state.submissions.unshift(sub);
+}
+
 export function canSubmit() {
-  if (state.plan === 'pro' || state.plan === 'student') return true;
+  if (state.plan === 'pro') return true;
+  if (!state.usageLoaded) return true;
   return state.usageCount < state.usageLimit;
 }
 
 export function remainingSubmissions() {
-  if (state.plan === 'pro' || state.plan === 'student') return Infinity;
+  if (state.plan === 'pro') return Infinity;
   return Math.max(0, state.usageLimit - state.usageCount);
 }
