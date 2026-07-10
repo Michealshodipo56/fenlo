@@ -1,0 +1,25 @@
+.nb-pricing{padding:32px 0 60px}
+
+.nb-plans{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:8px}
+@media(max-width:900px){.nb-plans{grid-template-columns:1fr}}
+
+.nb-plan{
+  border:1.5px solid var(--ink);background:var(--paper);padding:28px 24px;
+  position:relative;display:flex;flex-direction:column;
+}
+.nb-plan.featured{background:var(--yellow);box-shadow:3px 3px 0 var(--ink)}
+.nb-plan .tag{
+  position:absolute;top:-12px;left:20px;
+  padding:4px 10px;background:var(--ink);color:var(--paper);
+  font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+}
+.nb-plan h3{margin:0 0 4px;font-size:22px;font-weight:800}
+.nb-plan .price{font-family:var(--serif);font-style:italic;font-size:36px;font-weight:700;margin:12px 0}
+.nb-plan .price span{font-family:var(--mono);font-style:normal;font-size:13px;color:var(--ink-3)}
+.nb-plan ul{list-style:none;padding:0;margin:0 0 20px;flex:1}
+.nb-plan li{
+  padding:8px 0;border-bottom:1px solid var(--rule);
+  font-size:14px;color:var(--ink-2);display:flex;gap:8px;align-items:flex-start;
+}
+.nb-plan li::before{content:"✓";color:var(--green);font-weight:700;flex-shrink:0}
+.nb-plan .nb-btn{width:100%;justify-content:center;padding:12px}
