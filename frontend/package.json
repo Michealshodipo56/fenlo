@@ -1,0 +1,18 @@
+{
+  "name": "fenlo-frontend",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build:css": "node scripts/build-css.mjs",
+    "build:config": "node scripts/inject-config.mjs",
+    "build": "npm run build:css && npm run build:config",
+    "dev": "npm run build && npx serve public -l 3000"
+  },
+  "devDependencies": {
+    "serve": "^14.2.4"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

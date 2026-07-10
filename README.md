@@ -1,56 +1,69 @@
-# Fenlo
+# Fenlo — monorepo
 
-AI assignment completion platform for students. Upload assignments (text or files), choose output style, and download formatted results.
+AI assignment platform split into two deployable services:
 
-Built with the **Studora** notebook UI — paper backgrounds, ink borders, Fraunces serif accents, and the same calm, distraction-free design language.
+| Folder | Host | What it runs |
+|--------|------|--------------|
+| `frontend/` | **Vercel** | Static SPA (Studora UI) |
+| `backend/` | **Render** | Express API (AI, parse, export) |
 
-## Features (MVP)
+## Local development
 
-- **Submit** — paste text or upload PDF, DOCX, TXT, images
-- **Output modes** — Full Assignment (formatted essay/report) or Direct Answer (concise solution)
-- **Export** — PDF, DOCX, TXT, Markdown
-- **History** — local submission history in browser storage
-- **Pricing** — freemium with usage limits (demo plan switching)
-- **Auth** — Google sign-in via Supabase (optional)
-
-## Quick start
-
+**Terminal 1 — backend (port 4000):**
 ```bash
+cd backend
+cp .env.example .env
+# Add GROQ_API_KEY (free at console.groq.com)
 npm install
-cp .env.example .env.local   # add OPENAI_API_KEY for real AI generation
-npm run build:css
-npm start                    # vercel dev on http://localhost:3000
+npm run dev
 ```
 
-Without `OPENAI_API_KEY`, the app runs in **demo mode** with sample generated content.
+**Terminal 2 — frontend (port 3000):**
+```bash
+cd frontend
+cp .env.example .env
+# Set API_URL=http://localhost:4000
+npm install
+export API_URL=http://localhost:4000
+npm run build
+npm run dev
+```
 
-## Environment variables
-
-| Variable | Description |
-|----------|-------------|
-| `OPENAI_API_KEY` | OpenAI API key for assignment generation |
-| `SUPABASE_URL` | Supabase project URL (optional, for auth) |
-| `SUPABASE_ANON_KEY` | Supabase anon key (expose via `window.__FENLO_SUPABASE_*` in production) |
-| `FREE_TIER_LIMIT` | Free submissions per month (default: 5) |
-
-## Stack
-
-- **Frontend** — Vanilla JS SPA (Studora design system)
-- **Backend** — Vercel serverless functions
-- **AI** — OpenAI GPT-4o-mini
-- **Export** — pdf-lib, docx
-- **Parsing** — pdf-parse, mammoth
+Open **http://localhost:3000**
 
 ## Deploy
 
-```bash
-npm run deploy
-```
+### Backend → Render
 
-## Academic integrity
+1. New **Web Service** → connect GitHub repo
+2. **Root Directory:** `backend`
+3. **Build:** `npm install`
+4. **Start:** `npm start`
+5. **Env vars:** `GROQ_API_KEY`, `ALLOWED_ORIGINS` (your Vercel URL), `DATABASE_URL` (Neon)
 
-Fenlo is positioned as a **study and learning aid**. Students should use generated content to understand concepts — not submit it as their own work.
+Or use the Blueprint: point Render at `backend/render.yaml`.
 
-## License
+### Frontend → Vercel
 
-Private — Micheal Shodipo
+1. New project → connect same GitHub repo
+2. **Root Directory:** `frontend`
+3. **Framework:** Other
+4. **Build Command:** `npm run build`
+5. **Output Directory:** `public`
+6. **Env vars:**
+   - `API_URL` = your Render backend URL (e.g. `https://fenlo-api.onrender.com`)
+   - `NEON_AUTH_URL` = Neon Auth URL from Neon Console
+
+### After deploy
+
+1. Set Render `ALLOWED_ORIGINS` to your Vercel URL
+2. Add Vercel URL to Neon Auth trusted domains
+3. Run `backend/sql/schema.sql` in Neon SQL Editor
+
+## Stack
+
+- **Frontend:** HTML, CSS, vanilla JS
+- **Backend:** Node.js, Express
+- **Database:** Neon Postgres
+- **Auth:** Neon Auth
+- **AI:** Groq (free) or Gemini (free)

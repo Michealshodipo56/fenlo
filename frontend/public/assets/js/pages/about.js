@@ -29,7 +29,7 @@ export function renderAbout() {
     </div>
 
     <div class="nb-sh"><h2>Contact</h2></div>
-    <p style="font-family:var(--mono);font-size:13px;color:var(--ink-2)">Micheal Shodipo · <a href="mailto:hello@fenlo.app" class="sq">hello@fenlo.app</a></p>
+    <p style="font-family:var(--mono);font-size:13px;color:var(--ink-2)">Micheal Shodipo · <a href="mailto:michealshodipo56@gmail.com" class="sq">hello@fenlo.app</a></p>
   </main>
   ${footer()}`;
   wireNav(r);

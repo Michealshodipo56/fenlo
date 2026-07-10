@@ -1,8 +1,15 @@
 import { toast } from './toast.js';
+import { API_BASE } from './config.js';
+
+function apiUrl(path) {
+  const base = API_BASE || window.__FENLO_API_URL__ || '';
+  return `${base}${path}`;
+}
 
 async function request(path, opts = {}) {
-  const res = await fetch(path, {
+  const res = await fetch(apiUrl(path), {
     ...opts,
+    credentials: 'include',
     headers: {
       ...(opts.body instanceof FormData ? {} : { 'Content-Type': 'application/json' }),
       ...opts.headers,
@@ -28,8 +35,9 @@ export const API = {
   },
 
   async exportResult({ content, title, format }) {
-    const res = await fetch('/api/export', {
+    const res = await fetch(apiUrl('/api/export'), {
       method: 'POST',
+      credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ content, title, format }),
     });
