@@ -1,0 +1,14 @@
+@keyframes nbPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.45;transform:scale(.8)}}
+@keyframes nbSpring{0%{transform:scale(1)}45%{transform:scale(1.03)}100%{transform:scale(1)}}
+@keyframes nbShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+@keyframes nbFade{from{opacity:0}to{opacity:1}}
+@keyframes nbRise{from{opacity:0;transform:translateY(14px) rotate(-1deg)}to{opacity:1;transform:none}}
+@keyframes nbFall{to{transform:translate(var(--drift,0),100vh) rotate(720deg);opacity:0}}
+@keyframes nbWobble{0%,100%{transform:rotate(0)}25%{transform:rotate(-3deg)}75%{transform:rotate(3deg)}}
+@keyframes nbSkel{from{background-position:200% 0}to{background-position:-200% 0}}
+@keyframes nbPageIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes nbSlideIn{from{opacity:0;transform:translateX(-12px)}to{opacity:1;transform:none}}
+
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+}

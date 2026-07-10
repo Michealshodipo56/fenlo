@@ -1,0 +1,72 @@
+/* Studora — self-hosted fonts (woff2 only, latin subset, variable axes).
+ * Replaces the third-party Google Fonts stylesheet that was costing us a
+ * ~1.2s FCP gap and contributing to a 0.42 CLS on the hero.
+ *
+ * Strategy:
+ *   - One variable woff2 per family (Inter, Fraunces italic, JetBrains Mono).
+ *     Each is declared with a font-weight range so a single file covers all
+ *     weights we use.
+ *   - Hero h1 uses Inter 800 + a Fraunces-italic <em>. Both files are
+ *     <link rel="preload"> in index.html so they arrive in the first round trip.
+ *
+ * font-display choices (CLS-driven):
+ *   - Fraunces italic uses `font-display: optional`. The hero h1 has a single
+ *     italic word ("quieter") whose swap from Georgia -> Fraunces was the
+ *     dominant source of the 0.4201 CLS. `optional` tells the browser to use
+ *     the fallback if Fraunces hasn't arrived in ~100ms and *not* swap later,
+ *     guaranteeing zero shift. Since we also preload the file, on warm and
+ *     reasonably-fast connections it arrives in time and renders in Fraunces;
+ *     on slow connections we keep Georgia and skip the shift entirely.
+ *   - Inter and JetBrains Mono use `font-display: swap`. Inter 800 is
+ *     preloaded; the size-adjust/ascent-override on the @font-face below
+ *     keeps fallback metrics close enough that any swap is sub-pixel.
+ */
+
+/* Inter — variable, weights 400..800. Used everywhere. */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url('/assets/fonts/inter-var.woff2') format('woff2-variations'),
+       url('/assets/fonts/inter-var.woff2') format('woff2');
+  /* Metric overrides for the ui-sans-serif / system-ui fallback to minimise
+   * layout shift on swap. Numbers derived from Inter's vs system-ui's vertical
+   * metrics; same approximation that next/font ships. */
+  size-adjust: 107.4%;
+  ascent-override: 90%;
+  descent-override: 22.43%;
+  line-gap-override: 0%;
+}
+
+/* Fraunces italic — variable opsz 9..144, weight 500..700. Hero emphasis +
+ * stats. font-display: optional eliminates the worst-case CLS on the hero. */
+@font-face {
+  font-family: 'Fraunces';
+  font-style: italic;
+  font-weight: 500 700;
+  font-display: optional;
+  src: url('/assets/fonts/fraunces-italic-var.woff2') format('woff2-variations'),
+       url('/assets/fonts/fraunces-italic-var.woff2') format('woff2');
+  /* Metric overrides tuned for Georgia / ui-serif fallback so that if Fraunces
+   * never arrives, the hero typography still has roughly the right vertical
+   * rhythm. */
+  size-adjust: 107%;
+  ascent-override: 95%;
+  descent-override: 25%;
+  line-gap-override: 0%;
+}
+
+/* JetBrains Mono — variable, weights 400..500. Small monospace UI text only. */
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 500;
+  font-display: swap;
+  src: url('/assets/fonts/jetbrains-mono-var.woff2') format('woff2-variations'),
+       url('/assets/fonts/jetbrains-mono-var.woff2') format('woff2');
+  size-adjust: 100%;
+  ascent-override: 90%;
+  descent-override: 20%;
+  line-gap-override: 0%;
+}
