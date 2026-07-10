@@ -1,0 +1,25 @@
+.nb-btn{
+  padding:9px 16px;border:1.5px solid var(--ink);background:var(--paper);
+  font-family:var(--mono);font-size:12.5px;font-weight:600;
+  text-decoration:none;color:var(--ink);border-radius:6px;
+  white-space:nowrap;display:inline-flex;align-items:center;gap:8px;cursor:pointer;
+  transition:transform .12s, box-shadow .12s;
+}
+.nb-btn:hover{transform:translate(-1px,-1px);box-shadow:var(--shadow-pop)}
+.nb-btn:active{transform:translate(0,0);box-shadow:none}
+.nb-btn.primary{background:var(--ink);color:var(--paper)}
+.nb-btn.primary:hover{box-shadow:2px 2px 0 var(--ink-3)}
+.nb-btn.y{background:var(--yellow)}
+.nb-btn.sm{padding:7px 12px;font-size:12px}
+
+.nb-sticker{display:inline-block;padding:3px 10px;font-family:var(--mono);font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;border:1.5px solid var(--ink);border-radius:3px;background:var(--paper)}
+.nb-sticker.y{background:var(--yellow)}
+.nb-sticker.g{background:var(--mint);color:var(--green)}
+.nb-sticker.p{background:var(--blush);color:var(--red)}
+.nb-sticker.b{background:var(--sky);color:var(--blue)}
+.nb-sticker.d{background:var(--ink);color:var(--paper)}
+
+.nb-pin{position:absolute;top:-10px;right:-8px;background:var(--yellow);border:1.5px solid var(--ink);padding:4px 9px;font-family:var(--mono);font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;transform:rotate(4deg);box-shadow:var(--shadow-pop);z-index:2}
+.nb-pin.g{background:var(--mint)}
+.nb-pin.p{background:var(--blush)}
+.nb-pin.b{background:var(--sky)}
