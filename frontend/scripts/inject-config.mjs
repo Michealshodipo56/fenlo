@@ -17,7 +17,7 @@ const siteUrl = normalizeSiteUrl(process.env.SITE_URL);
 const apiUrl = (process.env.API_URL || '').replace(/\/$/, '');
 const neonAuthUrl = process.env.NEON_AUTH_URL || '';
 const googleVerification = process.env.GOOGLE_SITE_VERIFICATION || 'GWlm1cpN7bEXema60NG3J64EbbJ5VbOZnon6exzgZ1s';
-const ogImage = process.env.OG_IMAGE_URL || '/assets/img/og-cover.png';
+const ogImage = process.env.OG_IMAGE_URL || '/assets/img/og-cover.jpg';
 
 const ogImagePath = ogImage.startsWith('http')
   ? ogImage
@@ -53,6 +53,7 @@ const seoBlock = `<!-- fenlo-seo -->
 <meta property="og:description" content="Upload your assignment — get a polished answer back. Full assignment or direct solution. Export to PDF, Word, TXT, or Markdown.">
 <meta property="og:url" content="${siteUrl}/">
 <meta property="og:image" content="${ogImagePath}">
+<meta property="og:image:secure_url" content="${ogImagePath}">
 <meta property="og:image:type" content="${ogImagePath.endsWith('.png') ? 'image/png' : ogImagePath.endsWith('.svg') ? 'image/svg+xml' : 'image/jpeg'}">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -61,6 +62,7 @@ const seoBlock = `<!-- fenlo-seo -->
 <meta name="twitter:title" content="Fenlo · AI Assignment Completion Platform">
 <meta name="twitter:description" content="Upload your assignment — get a polished answer back. Export to PDF, Word, TXT, or Markdown.">
 <meta name="twitter:image" content="${ogImagePath}">
+<link rel="image_src" href="${ogImagePath}">
 ${googleMeta}
 <script type="application/ld+json">
 {
