@@ -1,0 +1,33 @@
+.nb-user{position:relative}
+.nb-user-btn{
+  display:inline-flex;align-items:center;gap:10px;padding:6px 12px 6px 6px;
+  border:1.5px solid var(--ink);background:var(--paper);border-radius:999px;
+  font-family:var(--mono);font-size:12.5px;font-weight:600;cursor:pointer;
+  transition:transform .12s, box-shadow .12s;
+}
+.nb-user-btn:hover{transform:translate(-1px,-1px);box-shadow:var(--shadow-pop)}
+.nb-avatar{
+  width:28px;height:28px;border-radius:50%;background:var(--yellow);
+  display:grid;place-items:center;font-family:var(--sans);font-weight:800;
+  font-size:13px;overflow:hidden;border:1.5px solid var(--ink);flex-shrink:0;
+}
+.nb-avatar img{width:100%;height:100%;object-fit:cover;display:block}
+.nb-user-name{max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media(max-width:640px){.nb-user-name{display:none}}
+
+.nb-user-pop{
+  position:absolute;top:calc(100% + 8px);right:0;
+  min-width:240px;background:var(--paper);border:1.5px solid var(--ink);
+  border-radius:6px;padding:6px;display:none;flex-direction:column;
+  box-shadow:var(--shadow-pop);z-index:60;
+}
+.nb-user.open .nb-user-pop{display:flex}
+.nb-user-id{padding:10px 12px;border-bottom:1px dashed var(--rule-ink);margin-bottom:6px}
+.nb-user-name-full{font-family:var(--sans);font-size:14px;font-weight:700;color:var(--ink)}
+.nb-user-email{font-family:var(--mono);font-size:11px;color:var(--ink-3);margin-top:2px;overflow:hidden;text-overflow:ellipsis}
+.nb-user-pop button{
+  text-align:left;padding:8px 12px;border-radius:4px;
+  font-family:var(--mono);font-size:12.5px;color:var(--ink);cursor:pointer;
+  border:0;background:none;
+}
+.nb-user-pop button:hover{background:var(--yellow)}
