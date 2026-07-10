@@ -1,0 +1,31 @@
+/* Studora design tokens — sourced from studora-blueprint.html */
+:root{
+  --paper:#faf8f1;
+  --paper-2:#f3efe2;
+  --ink:#17181c;
+  --ink-2:#3c3d44;
+  --ink-3:#646570;
+  --rule:#e6e0cd;
+  --rule-ink:#d6cfb6;
+
+  --yellow:#ffe680;
+  --yellow-2:#fff2b5;
+  --mint:#c9ecd0;
+  --blush:#fbd2c5;
+  --sky:#c9dffc;
+  --lilac:#dfd3f3;
+
+  --green:#1f7a3d;
+  --red:#b94632;
+  --blue:#1e528f;
+
+  --sans:'Inter',ui-sans-serif,system-ui,sans-serif;
+  --serif:'Fraunces',ui-serif,Georgia,serif;
+  --mono:'JetBrains Mono',ui-monospace,monospace;
+
+  --rule-step:32px;
+  --shadow-pop:2px 2px 0 var(--ink);
+  --radius-sm:3px;
+  --radius:4px;
+  --radius-lg:6px;
+}

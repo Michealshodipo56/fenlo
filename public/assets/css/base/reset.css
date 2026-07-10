@@ -1,0 +1,65 @@
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body.nb{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--sans);
+  font-size:15.5px;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  background-image:linear-gradient(transparent 31px,var(--rule) 31px,var(--rule) 32px,transparent 32px);
+  background-size:100% 32px;
+  background-position:0 60px;
+  min-height:100vh;
+}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none;padding:0}
+p{margin:0 0 12px}
+h1,h2,h3,h4,h5{margin:0}
+img,svg{display:block;max-width:100%}
+
+mark.hl{background:var(--yellow);padding:0 .12em;border-radius:2px;box-decoration-break:clone;-webkit-box-decoration-break:clone;color:inherit}
+mark.hl.g{background:var(--mint)}
+mark.hl.p{background:var(--blush)}
+mark.hl.b{background:var(--sky)}
+
+.serif{font-family:var(--serif);font-style:italic;font-weight:500}
+.mono{font-family:var(--mono)}
+.muted{color:var(--ink-3)}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}
+
+/* Skip-to-content link — visible on focus only. WCAG 2.4.1 */
+.skip-link{
+  position:absolute;left:-9999px;top:0;
+  background:var(--ink,#17181c);color:var(--paper,#faf8f1);
+  padding:10px 16px;font-family:var(--mono);font-size:13px;font-weight:600;
+  border-radius:0 0 6px 0;z-index:9999;text-decoration:none;
+}
+.skip-link:focus{left:0;outline:2px solid var(--yellow,#ffe680);outline-offset:-2px}
+
+/* Respect reduced-motion users */
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}
+}
+
+/* Visible focus indicators for keyboard users */
+:focus-visible{outline:2px solid var(--ink-3,#3a3a3a);outline-offset:2px;border-radius:2px}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(--ink-3,#3a3a3a);outline-offset:2px}
+
+.nb-wrap{max-width:1240px;margin:0 auto;padding:0 24px}
+@media(max-width:600px){.nb-wrap{padding:0 16px}}
+
+/* Hand-drawn red squiggle underline on hover for body links — signature #4.
+   The SVG lives in /assets/img/squiggle.svg so the bytes are cached
+   immutably (per the long-lived Cache-Control rule on /assets/img/*) and
+   removed from every CSS bundle. The previous inline data URL added ~280 B
+   to every CSS render — small per-byte, but it was inside the critical
+   bundle and shipped on every page load. */
+.sq{display:inline;position:relative;background-image:none}
+.sq::after{
+  content:"";position:absolute;left:-2%;right:-2%;bottom:-2px;height:6px;
+  background:url("/assets/img/squiggle.svg") no-repeat bottom;
+  background-size:100% 100%;opacity:0;transition:opacity .15s;
+  pointer-events:none;
+}
+.sq:hover::after,a.sq:focus-visible::after{opacity:1}
