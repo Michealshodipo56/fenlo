@@ -3,6 +3,7 @@
   "buildCommand": "npm run build",
   "outputDirectory": "public",
   "rewrites": [
+    { "source": "/og-cover.jpg", "destination": "/assets/img/og-cover.jpg" },
     { "source": "/submit", "destination": "/" },
     { "source": "/history", "destination": "/" },
     { "source": "/pricing", "destination": "/" },
