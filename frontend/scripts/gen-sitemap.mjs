@@ -2,12 +2,15 @@
 import { writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { loadEnv } from './load-env.mjs';
+
+loadEnv();
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const publicDir = join(__dirname, '..', 'public');
 
 function normalizeSiteUrl(url) {
-  let u = (url || 'https://fenlo.vercel.app').trim().replace(/\/$/, '');
+  let u = (url || 'http://localhost:3000').trim().replace(/\/$/, '');
   if (!/^https?:\/\//i.test(u)) u = `https://${u}`;
   return u;
 }
