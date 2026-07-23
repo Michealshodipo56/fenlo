@@ -1,3 +1,6 @@
+import { loadEnv } from '../lib/load-env.js';
+loadEnv();
+
 import express from 'express';
 import cors from 'cors';
 import { corsOptions } from '../lib/cors.js';
