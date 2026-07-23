@@ -1,7 +1,6 @@
 import { Router } from 'express';
 import { randomUUID } from 'node:crypto';
 import { generateContent } from '../lib/ai.js';
-import { hasDb } from '../lib/db.js';
 import { canGenerate, incrementUsage } from '../lib/usage.js';
 import { createSubmission, truncateTitle } from '../lib/submissions.js';
 import { requireUser } from '../lib/user.js';
@@ -10,10 +9,6 @@ const router = Router();
 
 router.post('/', requireUser, async (req, res) => {
   try {
-    if (!hasDb()) {
-      return res.status(503).json({ error: 'Database not configured — set DATABASE_URL on Render' });
-    }
-
     const { text, mode = 'full', fileName } = req.body || {};
     const userId = req.userId;
 
