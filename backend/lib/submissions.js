@@ -1,4 +1,6 @@
 import { query } from './db.js';
+import { useMemory } from './usage.js';
+import * as mem from './memory-store.js';
 
 function rowToSubmission(row) {
   return {
@@ -13,6 +15,9 @@ function rowToSubmission(row) {
 }
 
 export async function createSubmission({ id, userId, title, input, output, mode, fileName }) {
+  if (await useMemory()) {
+    return mem.memoryCreateSubmission({ id, userId, title, input, output, mode, fileName });
+  }
   const { rows } = await query(
     `INSERT INTO submissions (id, user_id, title, input_text, output_text, mode, file_name)
      VALUES ($1, $2, $3, $4, $5, $6, $7)
@@ -23,6 +28,7 @@ export async function createSubmission({ id, userId, title, input, output, mode,
 }
 
 export async function listSubmissions(userId, limit = 50) {
+  if (await useMemory()) return mem.memoryListSubmissions(userId).slice(0, limit);
   const { rows } = await query(
     `SELECT * FROM submissions
      WHERE user_id = $1
@@ -34,6 +40,10 @@ export async function listSubmissions(userId, limit = 50) {
 }
 
 export async function getSubmission(userId, id) {
+  if (await useMemory()) {
+    const s = mem.memoryGetSubmission(id);
+    return s && s.userId === userId ? s : null;
+  }
   const { rows } = await query(
     `SELECT * FROM submissions WHERE id = $1 AND user_id = $2`,
     [id, userId],
@@ -42,6 +52,11 @@ export async function getSubmission(userId, id) {
 }
 
 export async function updateSubmissionOutput(userId, id, output) {
+  if (await useMemory()) {
+    const s = mem.memoryGetSubmission(id);
+    if (!s || s.userId !== userId) return null;
+    return mem.memoryUpdateSubmission(id, output);
+  }
   const { rows } = await query(
     `UPDATE submissions SET output_text = $3
      WHERE id = $1 AND user_id = $2
