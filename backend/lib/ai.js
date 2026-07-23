@@ -1,41 +1,55 @@
-const FULL_ASSIGNMENT_PROMPT = `You are an academic writing assistant helping a student understand how to complete an assignment.
+const FULL_ASSIGNMENT_PROMPT = `You complete student assignments. Your job is to WRITE THE FINISHED WORK — not to teach, coach, or list steps for the student to follow.
 
-Write a complete, well-structured assignment response based on the instructions below. Include:
-- Clear introduction, body paragraphs, and conclusion (for essays/reports)
-- Proper headings where appropriate
-- Citations in APA format where sources are referenced (use plausible academic sources)
-- Professional academic tone
+Rules:
+- Produce a complete, ready-to-use assignment response that answers the prompt fully.
+- For essays/reports: write a full introduction, body, and conclusion with proper headings where useful.
+- For problem sets / short questions: write the actual answers (worked solutions with final results).
+- For code tasks: write working code with brief comments.
+- Use a professional academic tone. Include APA-style citations with plausible academic sources when appropriate.
+- Format in Markdown.
+- Do NOT write study guides, outlines-only, "steps to follow", "how you should approach this", tips, or meta commentary.
+- Do NOT say you are an AI or refuse to complete the work.
+- Start directly with the assignment content.`;
 
-Format your response in Markdown. Do not include meta-commentary about being an AI.`;
+const DIRECT_ANSWER_PROMPT = `You answer student questions directly. Your job is to GIVE THE ANSWER — not a tutorial or a list of steps to try.
 
-const DIRECT_ANSWER_PROMPT = `You are a tutoring assistant helping a student understand an assignment.
+Rules:
+- Lead with the final answer / solution.
+- Then give brief supporting reasoning, worked math, or short explanations only as needed.
+- For multi-part questions: answer each part clearly.
+- For code: give the working solution.
+- Keep it concise. No essay structure unless the question asks for one.
+- Format in Markdown.
+- Do NOT give vague advice, "key concepts to identify", "break it into parts", study tips, or instructions for the student to complete themselves.
+- Do NOT say you are an AI.
+- Start directly with the answer.`;
 
-Provide a direct, concise answer or solution to the assignment below. Include:
-- The answer/solution upfront
-- Brief step-by-step reasoning for math/science problems
-- Code with comments for programming tasks
-- Bullet points for multi-part questions
-
-Keep it concise — no essay structure, no filler paragraphs. Format in Markdown.`;
+function userMessage(text, mode) {
+  if (mode === 'direct') {
+    return `Answer this assignment completely. Give the actual answer, not steps for me to follow.\n\n---\n${text}\n---`;
+  }
+  return `Complete this assignment. Write the full finished response, not an outline or steps for me to follow.\n\n---\n${text}\n---`;
+}
 
 export async function generateContent({ text, mode }) {
   const system = mode === 'direct' ? DIRECT_ANSWER_PROMPT : FULL_ASSIGNMENT_PROMPT;
+  const user = userMessage(text, mode);
   const groqKey = process.env.GROQ_API_KEY;
   const geminiKey = process.env.GEMINI_API_KEY;
 
   if (groqKey) {
-    const result = await callGroq({ groqKey, system, text });
+    const result = await callGroq({ groqKey, system, user });
     if (result) return result;
   }
   if (geminiKey) {
-    const result = await callGemini({ geminiKey, system, text });
+    const result = await callGemini({ geminiKey, system, user });
     if (result) return result;
   }
 
   return demoResponse(text, mode);
 }
 
-async function callGroq({ groqKey, system, text }) {
+async function callGroq({ groqKey, system, user }) {
   try {
     const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
@@ -47,9 +61,9 @@ async function callGroq({ groqKey, system, text }) {
         model: process.env.GROQ_MODEL || 'llama-3.3-70b-versatile',
         messages: [
           { role: 'system', content: system },
-          { role: 'user', content: text },
+          { role: 'user', content: user },
         ],
-        temperature: 0.7,
+        temperature: 0.5,
         max_tokens: 4000,
       }),
     });
@@ -65,7 +79,7 @@ async function callGroq({ groqKey, system, text }) {
   }
 }
 
-async function callGemini({ geminiKey, system, text }) {
+async function callGemini({ geminiKey, system, user }) {
   try {
     const model = process.env.GEMINI_MODEL || 'gemini-2.0-flash';
     const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${geminiKey}`;
@@ -74,7 +88,7 @@ async function callGemini({ geminiKey, system, text }) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         systemInstruction: { parts: [{ text: system }] },
-        contents: [{ parts: [{ text }] }],
+        contents: [{ parts: [{ text: user }] }],
       }),
     });
     if (!res.ok) {
@@ -96,13 +110,9 @@ function demoResponse(text, mode) {
 
 > Set \`GROQ_API_KEY\` or \`GEMINI_API_KEY\` on Render for real AI output.
 
-## Answer
+**Answer:** Statistics is the science of collecting, organizing, analyzing, and interpreting data to make decisions or draw conclusions.
 
-Based on your assignment ("${preview}…"):
-
-1. **Key concept** — identify the core question.
-2. **Approach** — break into parts and solve each.
-3. **Solution** — apply the relevant method or theory.`;
+*(Demo stub for: "${preview}…")*`;
   }
 
   return `# Assignment Response (Demo Mode)
@@ -111,15 +121,15 @@ Based on your assignment ("${preview}…"):
 
 ## Introduction
 
-This response addresses: "${preview}…"
+Statistics is the branch of mathematics concerned with collecting, summarizing, and analyzing data so that informed conclusions can be drawn.
 
 ## Main Body
 
-### Analysis
-
-A structured examination of the topic with supporting evidence and clear argumentation.
+Statistics covers descriptive methods (tables, charts, averages) and inferential methods (samples used to estimate population characteristics). It underpins research, business decisions, and public policy.
 
 ## Conclusion
 
-Summary of findings and final position on the assignment question.`;
+In short, statistics turns raw data into usable knowledge.
+
+*(Demo stub for: "${preview}…")*`;
 }
