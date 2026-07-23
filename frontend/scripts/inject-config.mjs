@@ -2,19 +2,23 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { loadEnv } from './load-env.mjs';
+
+loadEnv();
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const publicDir = join(__dirname, '..', 'public');
 const coreDir = join(publicDir, 'assets', 'js', 'core');
 
 function normalizeSiteUrl(url) {
-  let u = (url || 'https://fenlo.vercel.app').trim().replace(/\/$/, '');
+  let u = (url || 'http://localhost:3000').trim().replace(/\/$/, '');
   if (!/^https?:\/\//i.test(u)) u = `https://${u}`;
   return u;
 }
 
 const siteUrl = normalizeSiteUrl(process.env.SITE_URL);
-const apiUrl = (process.env.API_URL || '').replace(/\/$/, '');
+// Local default: backend on :4000. On Vercel, always set API_URL.
+const apiUrl = (process.env.API_URL || 'http://localhost:4000').replace(/\/$/, '');
 const neonAuthUrl = process.env.NEON_AUTH_URL || '';
 const googleVerification = process.env.GOOGLE_SITE_VERIFICATION || 'GWlm1cpN7bEXema60NG3J64EbbJ5VbOZnon6exzgZ1s';
 const ogImage = process.env.OG_IMAGE_URL || '/assets/img/og-cover.jpg';
