@@ -1,5 +1,4 @@
 import { Router } from 'express';
-import { hasDb } from '../lib/db.js';
 import { listSubmissions, getSubmission, updateSubmissionOutput } from '../lib/submissions.js';
 import { canGenerate, incrementUsage } from '../lib/usage.js';
 import { generateContent } from '../lib/ai.js';
@@ -9,9 +8,6 @@ const router = Router();
 
 router.get('/', requireUser, async (req, res) => {
   try {
-    if (!hasDb()) {
-      return res.status(503).json({ error: 'Database not configured' });
-    }
     const submissions = await listSubmissions(req.userId);
     res.json({ submissions });
   } catch (err) {
@@ -22,9 +18,6 @@ router.get('/', requireUser, async (req, res) => {
 
 router.get('/:id', requireUser, async (req, res) => {
   try {
-    if (!hasDb()) {
-      return res.status(503).json({ error: 'Database not configured' });
-    }
     const submission = await getSubmission(req.userId, req.params.id);
     if (!submission) {
       return res.status(404).json({ error: 'Submission not found' });
@@ -38,10 +31,6 @@ router.get('/:id', requireUser, async (req, res) => {
 
 router.post('/:id/regenerate', requireUser, async (req, res) => {
   try {
-    if (!hasDb()) {
-      return res.status(503).json({ error: 'Database not configured' });
-    }
-
     const submission = await getSubmission(req.userId, req.params.id);
     if (!submission) {
       return res.status(404).json({ error: 'Submission not found' });
