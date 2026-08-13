@@ -11,17 +11,32 @@ const publicDir = join(__dirname, '..', 'public');
 const coreDir = join(publicDir, 'assets', 'js', 'core');
 
 function normalizeSiteUrl(url) {
-  let u = (url || 'http://localhost:3000').trim().replace(/\/$/, '');
+  let u = String(url || '').trim().replace(/\/$/, '');
+  if (!u) return '';
   if (!/^https?:\/\//i.test(u)) u = `https://${u}`;
   return u;
 }
 
-const siteUrl = normalizeSiteUrl(process.env.SITE_URL);
+/** Production URL for OG tags — never localhost on Vercel. */
+function resolveSiteUrl() {
+  const onVercel = process.env.VERCEL === '1' || Boolean(process.env.VERCEL_URL);
+  if (onVercel) {
+    if (process.env.SITE_URL && !/localhost|127\.0\.0\.1/i.test(process.env.SITE_URL)) {
+      return normalizeSiteUrl(process.env.SITE_URL);
+    }
+    if (process.env.VERCEL_URL) return normalizeSiteUrl(`https://${process.env.VERCEL_URL}`);
+    return 'https://fenlo.vercel.app';
+  }
+  if (process.env.SITE_URL) return normalizeSiteUrl(process.env.SITE_URL);
+  return 'http://localhost:3000';
+}
+
+const siteUrl = resolveSiteUrl();
 // Local default: backend on :4000. On Vercel, always set API_URL.
 const apiUrl = (process.env.API_URL || 'http://localhost:4000').replace(/\/$/, '');
 const neonAuthUrl = process.env.NEON_AUTH_URL || '';
 const googleVerification = process.env.GOOGLE_SITE_VERIFICATION || 'GWlm1cpN7bEXema60NG3J64EbbJ5VbOZnon6exzgZ1s';
-const ogImage = process.env.OG_IMAGE_URL || '/assets/img/og-cover.jpg';
+const ogImage = process.env.OG_IMAGE_URL || '/og-cover.jpg';
 
 const ogImagePath = ogImage.startsWith('http')
   ? ogImage
