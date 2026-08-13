@@ -30,6 +30,17 @@ export function renderAbout() {
 
     <div class="nb-sh"><h2>Contact</h2></div>
     <p style="font-family:var(--mono);font-size:13px;color:var(--ink-2)">Micheal Shodipo · <a href="mailto:michealshodipo56@gmail.com" class="sq">hello@fenlo.app</a></p>
+
+    <div class="nb-developer">
+      <span class="nb-developer-label">Developer</span>
+      <a class="nb-developer-link" href="https://github.com/michealshodipo56" target="_blank" rel="noopener noreferrer" aria-label="Micheal Shodipo on GitHub">
+        <img class="nb-developer-logo" src="/assets/img/logo.png" alt="" width="64" height="64" decoding="async">
+        <span class="nb-developer-meta">
+          <span class="nb-developer-name">Micheal Shodipo</span>
+          <span class="nb-developer-handle">github.com/michealshodipo56</span>
+        </span>
+      </a>
+    </div>
   </main>
   ${footer()}`;
   wireNav(r);

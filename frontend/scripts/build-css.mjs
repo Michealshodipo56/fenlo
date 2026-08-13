@@ -41,6 +41,7 @@ const ORDER = [
   'pages/result.css',
   'pages/history.css',
   'pages/pricing.css',
+  'pages/about.css',
 ];
 
 const CRITICAL_SET = new Set(CRITICAL);
