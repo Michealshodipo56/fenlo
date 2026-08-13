@@ -10,6 +10,8 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const publicDir = join(__dirname, '..', 'public');
 const coreDir = join(publicDir, 'assets', 'js', 'core');
 
+const PRODUCTION_URL = 'https://fenlo.vercel.app';
+
 function normalizeSiteUrl(url) {
   let u = String(url || '').trim().replace(/\/$/, '');
   if (!u) return '';
@@ -17,17 +19,14 @@ function normalizeSiteUrl(url) {
   return u;
 }
 
-/** Production URL for OG tags — never localhost on Vercel. */
+/** Canonical + OG URLs — always production domain on Vercel (never preview URLs). */
 function resolveSiteUrl() {
-  const onVercel = process.env.VERCEL === '1' || Boolean(process.env.VERCEL_URL);
-  if (onVercel) {
-    if (process.env.SITE_URL && !/localhost|127\.0\.0\.1/i.test(process.env.SITE_URL)) {
-      return normalizeSiteUrl(process.env.SITE_URL);
-    }
-    if (process.env.VERCEL_URL) return normalizeSiteUrl(`https://${process.env.VERCEL_URL}`);
-    return 'https://fenlo.vercel.app';
+  if (process.env.SITE_URL && !/localhost|127\.0\.0\.1/i.test(process.env.SITE_URL)) {
+    return normalizeSiteUrl(process.env.SITE_URL);
   }
-  if (process.env.SITE_URL) return normalizeSiteUrl(process.env.SITE_URL);
+  if (process.env.VERCEL === '1' || process.env.VERCEL_URL) {
+    return PRODUCTION_URL;
+  }
   return 'http://localhost:3000';
 }
 
