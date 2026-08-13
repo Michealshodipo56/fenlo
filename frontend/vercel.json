@@ -2,6 +2,9 @@
   "version": 2,
   "buildCommand": "npm run build",
   "outputDirectory": "public",
+  "env": {
+    "SITE_URL": "https://fenlo.vercel.app"
+  },
   "rewrites": [
     { "source": "/og-cover.jpg", "destination": "/assets/img/og-cover.jpg" },
     { "source": "/submit", "destination": "/" },
