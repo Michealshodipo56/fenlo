@@ -40,6 +40,11 @@ export async function generateContent({ text, mode }) {
   if (groqKey) {
     const result = await callGroq({ groqKey, system, user });
     if (result) return result;
+    if (process.env.NODE_ENV === 'production') {
+      throw new Error(
+        'Groq API failed — verify GROQ_API_KEY and GROQ_MODEL on the server.',
+      );
+    }
   }
   if (geminiKey) {
     const result = await callGemini({ geminiKey, system, user });
@@ -58,7 +63,7 @@ async function callGroq({ groqKey, system, user }) {
         Authorization: `Bearer ${groqKey}`,
       },
       body: JSON.stringify({
-        model: process.env.GROQ_MODEL || 'llama-3.3-70b-versatile',
+        model: process.env.GROQ_MODEL || 'qwen/qwen3.8-27b',
         messages: [
           { role: 'system', content: system },
           { role: 'user', content: user },
@@ -72,7 +77,11 @@ async function callGroq({ groqKey, system, user }) {
       return null;
     }
     const data = await res.json();
-    return data.choices?.[0]?.message?.content || null;
+    const message = data.choices?.[0]?.message;
+    const content = message?.content?.trim();
+    if (content) return content;
+    // Some Groq models (e.g. gpt-oss-*) return text in `reasoning` with empty `content`.
+    return message?.reasoning?.trim() || null;
   } catch (err) {
     console.warn('Groq request failed:', err.message);
     return null;
@@ -108,7 +117,7 @@ function demoResponse(text, mode) {
   if (mode === 'direct') {
     return `# Direct Answer (Demo Mode)
 
-> Set \`GROQ_API_KEY\` or \`GEMINI_API_KEY\` on Render for real AI output.
+> Set \`GROQ_API_KEY\` or \`GEMINI_API_KEY\` on the API server for real AI output.
 
 **Answer:** Statistics is the science of collecting, organizing, analyzing, and interpreting data to make decisions or draw conclusions.
 
@@ -117,7 +126,7 @@ function demoResponse(text, mode) {
 
   return `# Assignment Response (Demo Mode)
 
-> Set \`GROQ_API_KEY\` or \`GEMINI_API_KEY\` on Render for real AI output.
+> Set \`GROQ_API_KEY\` or \`GEMINI_API_KEY\` on the API server for real AI output.
 
 ## Introduction
 
