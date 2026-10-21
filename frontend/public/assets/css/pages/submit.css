@@ -13,16 +13,28 @@
 .nb-input-area:focus{box-shadow:var(--shadow-pop)}
 .nb-input-area::placeholder{color:var(--ink-3);font-family:var(--serif);font-style:italic}
 
+.nb-upload-card{margin-top:14px}
+.nb-upload-card h3{margin-bottom:12px}
+
+/* Visually hidden — label[for] still opens the picker */
+.nb-upload-input{
+  position:absolute;width:1px;height:1px;padding:0;margin:-1px;
+  overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;
+  opacity:0;pointer-events:none;
+}
+.nb-upload-input::-webkit-file-upload-button{display:none}
+
 .nb-upload-zone{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:6px;width:100%;box-sizing:border-box;position:relative;overflow:hidden;
   border:1.5px dashed var(--ink);border-radius:8px;padding:28px 20px;
   text-align:center;background:var(--paper-2);cursor:pointer;
   transition:background .12s,box-shadow .12s;
 }
 .nb-upload-zone:hover,.nb-upload-zone.dragover{background:var(--yellow);box-shadow:var(--shadow-pop)}
-.nb-upload-zone input{display:none}
-.nb-upload-zone .ic{font-size:28px;margin-bottom:8px}
-.nb-upload-zone h4{margin:0 0 6px;font-size:16px;font-weight:800}
-.nb-upload-zone p{margin:0;font-family:var(--mono);font-size:11.5px;color:var(--ink-3)}
+.nb-upload-zone .ic{font-size:28px;line-height:1}
+.nb-upload-title{display:block;font-size:16px;font-weight:800;color:var(--ink)}
+.nb-upload-hint{display:block;font-family:var(--mono);font-size:11.5px;color:var(--ink-3);line-height:1.4}
 
 .nb-file-chip{
   display:flex;align-items:center;gap:10px;padding:10px 14px;
