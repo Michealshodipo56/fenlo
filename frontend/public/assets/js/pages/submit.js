@@ -32,13 +32,13 @@ export async function renderSubmit() {
           <textarea class="nb-input-area" id="assignment-text" placeholder="e.g. Write a 1500-word essay on the causes of the French Revolution. Include at least 3 primary sources…" required></textarea>
         </div>
 
-        <div class="nb-card flat" style="margin-top:14px">
+        <div class="nb-card flat nb-upload-card">
           <h3>Or upload a file</h3>
-          <label class="nb-upload-zone" id="upload-zone">
-            <input type="file" id="file-input" accept=".pdf,.docx,.doc,.png,.jpg,.jpeg,.webp,.txt">
-            <div class="ic">📎</div>
-            <h4>Drop file here or click to browse</h4>
-            <p>PDF · DOCX · PNG · JPG · TXT — max 10 MB</p>
+          <input type="file" class="nb-upload-input" id="file-input" accept=".pdf,.docx,.doc,.png,.jpg,.jpeg,.webp,.txt" tabindex="-1" aria-hidden="true">
+          <label class="nb-upload-zone" id="upload-zone" for="file-input">
+            <span class="ic" aria-hidden="true">📎</span>
+            <span class="nb-upload-title">Drop file here or click to browse</span>
+            <span class="nb-upload-hint">PDF · DOCX · PNG · JPG · TXT — max 10 MB</span>
           </label>
           <div id="file-chip"></div>
         </div>
